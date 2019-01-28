@@ -4,7 +4,7 @@ __all__ = [
 ]
 
 
-from serial.serialutil import Timeout
+from serial.serialutil import *
 from functools import partial
 from itertools import chain
 import threading
@@ -54,14 +54,14 @@ class ServoController(object):
         self._lock = threading.RLock()
         self._responses = []
 
-    def _command(self, command, *params):
+    def _command(self, command, params):
         length = 2 + len(params)
         with self._lock:
             LOGGER.debug('Sending servo control packet: %s', hex_data([
-                0x55, 0x55, length, command, *params
+                0x55, 0x55, length, command, params
             ]))
             self._serial.write(bytearray([
-                0x55, 0x55, length, command, *params
+                0x55, 0x55, length, command, params
             ]))
 
     def _wait_for_response(self, command, timeout=None):
@@ -102,9 +102,9 @@ class ServoController(object):
 
             return params
 
-    def _query(self, command, *params, timeout=None):
+    def _query(self, command, params, timeout=None):
         with self._lock:
-            self._command(command, *params)
+            self._command(command, params)
             return self._wait_for_response(command, timeout=timeout)
 
     def move(self, positions, time=0):
