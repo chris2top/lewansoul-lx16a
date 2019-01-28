@@ -8,7 +8,7 @@ __all__ = [
 ]
 
 
-from serial.serialutil import Timeout
+from serial.serialutil import *
 from functools import partial
 import threading
 import logging
@@ -97,15 +97,15 @@ class ServoController(object):
         self._timeout = timeout
         self._lock = threading.RLock()
 
-    def _command(self, servo_id, command, *params):
+    def _command(self, servo_id, command, params):
         length = 3 + len(params)
         checksum = 255-((servo_id + length + command + sum(params)) % 256)
         LOGGER.debug('Sending servo control packet: %s', [
-            0x55, 0x55, servo_id, length, command, *params, checksum
+            0x55, 0x55, servo_id, length, command, params, checksum
         ])
         with self._lock:
             self._serial.write(bytearray([
-                0x55, 0x55, servo_id, length, command, *params, checksum
+                0x55, 0x55, servo_id, length, command, params, checksum
             ]))
 
     def _wait_for_response(self, servo_id, command, timeout=None):
@@ -151,7 +151,7 @@ class ServoController(object):
                 LOGGER.warning('Got command response from unexpected servo %s', sid)
                 continue
 
-            return [sid, cmd, *params]
+            return [sid, cmd, params]
 
     def _query(self, servo_id, command, timeout=None):
         with self._lock:
@@ -174,8 +174,8 @@ class ServoController(object):
 
         self._command(
             servo_id, SERVO_MOVE_TIME_WRITE,
-            lower_byte(position), higher_byte(position),
-            lower_byte(time), higher_byte(time),
+            (lower_byte(position), higher_byte(position),
+            lower_byte(time), higher_byte(time))
         )
 
     def get_prepared_move(self, servo_id, timeout=None):
