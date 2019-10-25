@@ -2,7 +2,7 @@ LewanSoul LX-16A servos driver & GUI (python 2.7)
 ====================================
 
 ## FORK INFORMATION
-maximulkin's LewanSoul LX-16A servo driver is initially implemented in Python 3.x. As I am using the driver for ROS I am limited by using python 2.7. Thus this fork implements a LX-16A servo driver in python 2.7 while still providing all the interfafes described in the original implementation.
+maximulkin's LewanSoul LX-16A servo driver is initially implemented in Python 3.x. As I am using the driver for ROS I am limited by using python 2.7. Thus this fork implements a LX-16A servo driver in python 2.7 while still providing all the interfafes described in the original implementation.  Highly WIP 
 
 ## Original Content
 LewanSoul LX-16A is a wonderful servos although using them requires
